@@ -1,0 +1,21 @@
+import socket
+import select
+import sys
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+port = 4489
+server_socket.bind(('192.168.1.24', port))
+server_socket.listen(4)
+client, addr = server_socket.accept()
+while True:
+    message_received = client.recv(1024)
+    if message_received:
+        while True:
+            message_decoded = message_received.decode()
+            response = message_decoded.upper()
+            client.send(bytes(response.encode()))
+            if message_decoded == "CLOSE SOCKET":
+                break
+            break
+    else:
+        client, addr = server_socket.accept()
